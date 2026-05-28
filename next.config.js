@@ -1,8 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
-  pageExtensions: ['tsx', 'ts', 'jsx', 'js'],
   images: {
     remotePatterns: [
       {
@@ -11,11 +9,11 @@ const nextConfig = {
       },
     ],
   },
-  // Exclude src directory from Next.js processing
+  // Exclude src directory from Next.js processing if it exists
   webpack: (config) => {
     config.watchOptions = {
       ...config.watchOptions,
-      ignored: /node_modules|\.next|src/,
+      ignored: /node_modules|\.next/,
     };
     return config;
   },
