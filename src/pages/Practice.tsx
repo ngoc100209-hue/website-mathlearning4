@@ -8,6 +8,7 @@ export default function Practice() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!selectedAnswer) {
+ 
       alert("Bé hãy chọn một đáp án nhé!");
       return;
     }

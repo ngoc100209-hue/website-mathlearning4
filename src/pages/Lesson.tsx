@@ -1,5 +1,5 @@
 import { ChevronRight, Play, Pause, RotateCcw, Gauge, FilePenLine, Sparkles, Check, Award, Star, Timer } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from 'next/link';
 
 export default function Lesson() {
   return (
@@ -103,7 +103,7 @@ export default function Lesson() {
             <div className="w-full h-3 bg-secondary-fixed rounded-full overflow-hidden mb-6">
               <div className="h-full bg-primary-container w-3/5 transition-all duration-1000 ease-out"></div>
             </div>
-            <Link to="/practice" className="block w-full text-center py-3 border-2 border-primary text-primary rounded-xl font-body text-sm font-bold hover:bg-primary-fixed transition-colors">
+            <Link href="/practice" className="block w-full text-center py-3 border-2 border-primary text-primary rounded-xl font-body text-sm font-bold hover:bg-primary-fixed transition-colors">
               Tiếp tục bài tập
             </Link>
           </section>
@@ -149,7 +149,7 @@ export default function Lesson() {
 
             <div className="grid grid-cols-2 gap-4">
               {[4, 5, 6, 3].map(num => (
-                <Link to="/practice" key={num} className="block text-center py-6 bg-surface-container-low hover:bg-primary-container hover:text-white transition-all rounded-2xl font-headline text-3xl font-bold border border-outline-variant active:scale-95 text-on-surface">
+                <Link href="/practice" key={num} className="block text-center py-6 bg-surface-container-low hover:bg-primary-container hover:text-white transition-all rounded-2xl font-headline text-3xl font-bold border border-outline-variant active:scale-95 text-on-surface">
                   {num}
                 </Link>
               ))}
