@@ -1,5 +1,5 @@
 import { GraduationCap, Languages, FilePenLine, Info, Star, CheckCircle2, Play } from "lucide-react";
-import { Link } from "react-router-dom";
+import Link from 'next/link';
 
 export default function Home() {
   return (
@@ -14,7 +14,7 @@ export default function Home() {
             Kiến tạo hành trình toán học rạng rỡ và dễ hiểu qua ngôn ngữ ký hiệu dành riêng cho các thiên thần nhỏ.
           </p>
           <div className="pt-4">
-            <Link to="/lesson" className="press-effect inline-block bg-primary-container text-white px-12 py-3 rounded-xl font-headline text-2xl font-bold shadow-sm hover:brightness-105 transition-all">
+            <Link href="/lesson" className="press-effect inline-block bg-primary-container text-white px-12 py-3 rounded-xl font-headline text-2xl font-bold shadow-sm hover:brightness-105 transition-all">
               Bắt đầu học ngay
             </Link>
           </div>
@@ -22,7 +22,7 @@ export default function Home() {
 
         {/* Bento Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full mt-20">
-          <Link to="/lesson" className="bg-surface-container-lowest border border-outline-variant rounded-xl p-12 flex flex-col items-center justify-center text-center ambient-glow transition-all duration-300 group cursor-pointer hover:shadow-lg">
+          <Link href="/lesson" className="bg-surface-container-lowest border border-outline-variant rounded-xl p-12 flex flex-col items-center justify-center text-center ambient-glow transition-all duration-300 group cursor-pointer hover:shadow-lg">
             <div className="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
               <GraduationCap className="text-on-secondary-container" size={32} />
             </div>
@@ -38,7 +38,7 @@ export default function Home() {
             <p className="font-body text-base text-on-surface-variant">Tra cứu từ vựng toán học trực quan</p>
           </div>
 
-          <Link to="/practice" className="bg-surface-container-lowest border border-outline-variant rounded-xl p-12 flex flex-col items-center justify-center text-center ambient-glow transition-all duration-300 group cursor-pointer hover:shadow-lg">
+          <Link href="/practice" className="bg-surface-container-lowest border border-outline-variant rounded-xl p-12 flex flex-col items-center justify-center text-center ambient-glow transition-all duration-300 group cursor-pointer hover:shadow-lg">
             <div className="w-16 h-16 rounded-full bg-secondary-container flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
               <FilePenLine className="text-on-secondary-container" size={32} />
             </div>
