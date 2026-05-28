@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #8b5000;
+  --color-on-primary: #ffffff;
+  --color-primary-container: #ff9800;
+  --color-on-primary-container: #653900;
+  --color-primary-fixed: #ffdcbe;
+  --color-primary-fixed-dim: #ffb870;
+  --color-on-primary-fixed: #2c1600;
+
+  --color-secondary: #735c00;
+  --color-on-secondary: #ffffff;
+  --color-secondary-container: #fdd34d;
+  --color-on-secondary-container: #725b00;
+  --color-secondary-fixed: #ffe087;
+  --color-secondary-fixed-dim: #ebc23e;
+  --color-on-secondary-fixed: #241a00;
+
+  --color-tertiary: #006876;
+  --color-on-tertiary: #ffffff;
+  --color-tertiary-container: #1bc2da;
+  --color-on-tertiary-container: #004b56;
+  --color-tertiary-fixed: #a1efff;
+
+  --color-background: #fcf9f8;
+  --color-on-background: #1b1c1c;
+  --color-surface: #fcf9f8;
+  --color-on-surface: #1b1c1c;
+  --color-surface-variant: #e5e2e1;
+  --color-on-surface-variant: #554434;
+
+  --color-outline: #887361;
+  --color-outline-variant: #dbc2ad;
+
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f6f3f2;
+  --color-surface-container: #f0eded;
+  --color-surface-container-high: #eae7e7;
+  --color-surface-container-highest: #e5e2e1;
+
+  --font-headline: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Lexend", ui-sans-serif, system-ui, sans-serif;
+  --font-math: "Lexend", ui-sans-serif, system-ui, sans-serif;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-on-background);
+  font-family: var(--font-body);
+  /* Smooth scrolling and antialiasing */
+  -webkit-font-smoothing: antialiased;
+  scroll-behavior: smooth;
+}
+
+/* Custom Utilities for Reusability */
+@layer utilities {
+  .press-effect:active {
+    transform: translateY(2px);
+  }
+  .ambient-glow:hover {
+    background-color: rgba(255, 152, 0, 0.1);
+  }
+  .ambient-glow-shadow:hover {
+    box-shadow: 0 0 20px 2px rgba(255, 152, 0, 0.15);
+  }
+  .math-card-border {
+    border: 1px solid rgba(255, 152, 0, 0.1);
+  }
+}
