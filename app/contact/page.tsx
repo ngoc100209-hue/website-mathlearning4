@@ -1,20 +1,57 @@
 'use client';
 
-import { useState } from "react";
-import { Mail, Phone, MapPin, Send, Loader2, CheckCircle2 } from "lucide-react";
+import { useState, useRef } from "react";
+import { Mail, Phone, MapPin, Send, Loader2, CheckCircle2, AlertCircle } from "lucide-react";
 
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState('');
+  const formRef = useRef<HTMLFormElement>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError('');
     setIsSubmitting(true);
-    setTimeout(() => {
-      setIsSubmitting(false);
+
+    try {
+      const formData = new FormData(e.currentTarget);
+      const name = formData.get('name') as string;
+      const email = formData.get('email') as string;
+      const title = formData.get('title') as string;
+      const message = formData.get('message') as string;
+
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          title,
+          message,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Có lỗi xảy ra');
+      }
+
       setIsSuccess(true);
+      if (formRef.current) {
+        formRef.current.reset();
+      }
       setTimeout(() => setIsSuccess(false), 3000);
-    }, 1500);
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Có lỗi xảy ra';
+      setError(errorMessage);
+      console.error('Form submission error:', err);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -61,42 +98,61 @@ export default function Contact() {
         </aside>
 
         {/* Contact Form */}
-        <form onSubmit={handleSubmit} className="lg:col-span-7 bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant space-y-6">
+        <form ref={formRef} onSubmit={handleSubmit} className="lg:col-span-7 bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant space-y-6">
           <div>
             <label className="font-body text-sm font-bold text-on-surface block mb-2">Tên của bạn</label>
             <input 
-              type="text" 
+              type="text"
+              name="name"
               placeholder="Nhập tên..." 
-              className="w-full px-4 py-3 rounded-lg bg-surface border border-outline-variant font-body text-on-surface focus:outline-none focus:border-primary transition-colors"
+              required
+              disabled={isSubmitting}
+              className="w-full px-4 py-3 rounded-lg bg-surface border border-outline-variant font-body text-on-surface focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
             />
           </div>
 
           <div>
             <label className="font-body text-sm font-bold text-on-surface block mb-2">Email</label>
             <input 
-              type="email" 
-              placeholder="your@email.com" 
-              className="w-full px-4 py-3 rounded-lg bg-surface border border-outline-variant font-body text-on-surface focus:outline-none focus:border-primary transition-colors"
+              type="email"
+              name="email"
+              placeholder="your@email.com"
+              required
+              disabled={isSubmitting}
+              className="w-full px-4 py-3 rounded-lg bg-surface border border-outline-variant font-body text-on-surface focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
             />
           </div>
 
           <div>
             <label className="font-body text-sm font-bold text-on-surface block mb-2">Tiêu Đề</label>
             <input 
-              type="text" 
+              type="text"
+              name="title"
               placeholder="Tiêu đề tin nhắn..." 
-              className="w-full px-4 py-3 rounded-lg bg-surface border border-outline-variant font-body text-on-surface focus:outline-none focus:border-primary transition-colors"
+              required
+              disabled={isSubmitting}
+              className="w-full px-4 py-3 rounded-lg bg-surface border border-outline-variant font-body text-on-surface focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
             />
           </div>
 
           <div>
             <label className="font-body text-sm font-bold text-on-surface block mb-2">Tin Nhắn</label>
             <textarea 
+              name="message"
               placeholder="Viết tin nhắn của bạn..." 
               rows={4}
-              className="w-full px-4 py-3 rounded-lg bg-surface border border-outline-variant font-body text-on-surface focus:outline-none focus:border-primary transition-colors"
+              required
+              disabled={isSubmitting}
+              className="w-full px-4 py-3 rounded-lg bg-surface border border-outline-variant font-body text-on-surface focus:outline-none focus:border-primary transition-colors disabled:opacity-50"
             ></textarea>
           </div>
+
+          {error && (
+            <div className="flex items-center gap-2 text-error bg-error/10 p-3 rounded-lg">
+              <AlertCircle size={20} />
+              <span className="font-body">{error}</span>
+            </div>
+          )}
 
           <button 
             type="submit"

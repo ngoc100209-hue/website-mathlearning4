@@ -15,7 +15,7 @@ export default function Navigation() {
     <nav className="hidden md:flex gap-6 items-center">
       <Link href="/" className={getNavLinkClass('/')}>Trang Chủ</Link>
       <span className="text-on-surface-variant font-medium font-body text-sm cursor-not-allowed opacity-70">Giới Thiệu</span>
-      <Link href="/lesson" className={getNavLinkClass('/lesson')}>Bài Học</Link>
+      <Link href="/lessons" className={getNavLinkClass('/lessons')}>Bài Học</Link>
       <Link href="/practice" className={getNavLinkClass('/practice')}>Ôn Tập</Link>
       <Link href="/contact" className={getNavLinkClass('/contact')}>Liên Hệ</Link>
     </nav>
