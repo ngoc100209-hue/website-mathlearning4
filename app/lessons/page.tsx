@@ -20,7 +20,9 @@ async function getLessons() {
     const lessonsWithProgress = lessons.map((lesson) => ({
       ...lesson,
       isCompleted: lesson.progress[0]?.isCompleted || false,
-      completedAt: lesson.progress[0]?.completedAt || null,
+      completedAt: lesson.progress[0]?.completedAt
+        ? lesson.progress[0].completedAt.toISOString()
+        : null,
     }));
 
     return lessonsWithProgress;
