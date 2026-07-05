@@ -1,5 +1,4 @@
 import { SignIn } from '@clerk/nextjs';
-import { viVN } from '@clerk/localizations';
 
 export default function SignInPage() {
   return (
@@ -9,7 +8,6 @@ export default function SignInPage() {
         path="/sign-in"
         signUpUrl="/auth"
         fallbackRedirectUrl="/profile"
-        localization={viVN}
       />
     </div>
   );
