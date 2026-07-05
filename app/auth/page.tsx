@@ -75,6 +75,10 @@ function AuthContent() {
   const { signIn, setActive: setActiveSignIn } = useSignIn();
   const { signUp, setActive: setActiveSignUp } = useSignUp();
 
+  const redirectAfterAuth = (target: string) => {
+    window.location.href = target;
+  };
+
   const switchMode = (nextMode: 'signin' | 'signup') => {
     setMode(nextMode);
     setError('');
@@ -129,7 +133,7 @@ function AuthContent() {
 
         if (result.status === 'complete' && result.createdSessionId) {
           await setActiveSignUp({ session: result.createdSessionId });
-          router.push('/profile');
+          redirectAfterAuth('/profile');
           return;
         }
 
@@ -159,7 +163,7 @@ function AuthContent() {
 
         if (result.status === 'complete' && result.createdSessionId) {
           await setActiveSignIn({ session: result.createdSessionId });
-          router.push(redirectPath);
+          redirectAfterAuth(redirectPath);
           return;
         }
 
