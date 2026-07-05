@@ -69,11 +69,21 @@ function AuthContent() {
   const [fullName, setFullName] = useState('');
   const [age, setAge] = useState('');
   const [location, setLocation] = useState('');
+  const [verificationCode, setVerificationCode] = useState('');
+  const [pendingVerification, setPendingVerification] = useState(false);
   const [error, setError] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isResendingCode, setIsResendingCode] = useState(false);
 
   const { signIn, setActive: setActiveSignIn } = useSignIn();
   const { signUp, setActive: setActiveSignUp } = useSignUp();
+
+  const switchMode = (nextMode: 'signin' | 'signup') => {
+    setMode(nextMode);
+    setError('');
+    setPendingVerification(false);
+    setVerificationCode('');
+  };
 
   const handleGoogleSignIn = async () => {
     if (!signIn) {
@@ -105,6 +115,21 @@ function AuthContent() {
           throw new Error('Clerk chưa sẵn sàng.');
         }
 
+        if (pendingVerification) {
+          const result = await signUp.attemptEmailAddressVerification({
+            code: verificationCode.trim(),
+          });
+
+          if (result.status === 'complete' && result.createdSessionId) {
+            await setActiveSignUp({ session: result.createdSessionId });
+            router.push('/profile');
+            return;
+          }
+
+          setError('Mã xác minh chưa đúng hoặc đã hết hạn. Vui lòng thử lại.');
+          return;
+        }
+
         const parsedAge = parseInt(age, 10);
         if (!Number.isInteger(parsedAge) || parsedAge <= 0) {
           setError('Tuổi không hợp lệ. Vui lòng nhập số nguyên lớn hơn 0.');
@@ -130,7 +155,8 @@ function AuthContent() {
 
         if (result.status === 'missing_requirements') {
           await signUp.prepareEmailAddressVerification();
-          setError('Đăng ký gần xong. Vui lòng xác minh email trước khi tiếp tục.');
+          setPendingVerification(true);
+          setError('Đăng ký gần xong. Vui lòng nhập mã xác minh đã được gửi về email.');
         } else {
           setError('Không thể tạo tài khoản. Vui lòng thử lại.');
         }
@@ -160,6 +186,25 @@ function AuthContent() {
     }
   };
 
+  const handleResendCode = async () => {
+    if (!signUp) {
+      setError('Clerk chưa sẵn sàng. Vui lòng thử lại.');
+      return;
+    }
+
+    try {
+      setError('');
+      setIsResendingCode(true);
+      await signUp.prepareEmailAddressVerification();
+      setError('Mã xác minh mới đã được gửi về email của bạn.');
+    } catch (err) {
+      const message = extractClerkErrorMessage(err);
+      setError(translateClerkError(message));
+    } finally {
+      setIsResendingCode(false);
+    }
+  };
+
   return (
     <div className="mx-auto flex min-h-[70vh] max-w-5xl flex-col items-center justify-center px-4 py-16">
       <div className="w-full max-w-3xl rounded-3xl border border-outline-variant bg-surface-container-lowest p-6 shadow-xl md:p-8">
@@ -180,14 +225,14 @@ function AuthContent() {
         <div className="mb-6 flex gap-2 rounded-2xl bg-surface p-2">
           <button
             type="button"
-            onClick={() => setMode('signup')}
+            onClick={() => switchMode('signup')}
             className={`flex-1 rounded-xl px-4 py-2 text-sm font-semibold transition ${mode === 'signup' ? 'bg-primary text-on-primary' : 'text-on-surface-variant'}`}
           >
             Đăng ký
           </button>
           <button
             type="button"
-            onClick={() => setMode('signin')}
+            onClick={() => switchMode('signin')}
             className={`flex-1 rounded-xl px-4 py-2 text-sm font-semibold transition ${mode === 'signin' ? 'bg-primary text-on-primary' : 'text-on-surface-variant'}`}
           >
             Đăng nhập
@@ -255,6 +300,21 @@ function AuthContent() {
                   placeholder="Ví dụ: Hà Nội"
                 />
               </label>
+
+              {pendingVerification ? (
+                <label className="text-sm font-semibold text-on-surface md:col-span-2">
+                  Mã xác minh email
+                  <input
+                    required
+                    value={verificationCode}
+                    onChange={(event) => setVerificationCode(event.target.value)}
+                    className="mt-2 w-full rounded-xl border border-outline-variant bg-surface px-4 py-3 text-on-surface outline-none focus:border-primary"
+                    placeholder="Nhập 6 chữ số đã nhận qua email"
+                    inputMode="numeric"
+                    autoComplete="one-time-code"
+                  />
+                </label>
+              ) : null}
             </>
           ) : null}
 
@@ -275,10 +335,24 @@ function AuthContent() {
             disabled={isSubmitting}
             className="flex items-center justify-center gap-2 rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-on-primary transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70 md:col-span-2"
           >
-            {isSubmitting ? 'Đang xử lý...' : mode === 'signup' ? 'Tạo tài khoản' : 'Đăng nhập'}
+            {isSubmitting ? 'Đang xử lý...' : mode === 'signup' ? pendingVerification ? 'Xác minh email' : 'Tạo tài khoản' : 'Đăng nhập'}
             <ArrowRight size={18} />
           </button>
         </form>
+
+        {mode === 'signup' && pendingVerification ? (
+          <div className="mt-5 rounded-2xl border border-outline-variant bg-surface p-4 text-sm text-on-surface-variant">
+            <p>Mã xác minh đã được gửi đến email của bạn. Hãy kiểm tra hộp thư đến hoặc thư rác.</p>
+            <button
+              type="button"
+              onClick={handleResendCode}
+              disabled={isResendingCode}
+              className="mt-3 font-semibold text-primary underline-offset-2 hover:underline disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {isResendingCode ? 'Đang gửi lại mã...' : 'Gửi lại mã xác minh'}
+            </button>
+          </div>
+        ) : null}
 
         {mode === 'signin' ? (
           <div className="mt-5 grid gap-3">
