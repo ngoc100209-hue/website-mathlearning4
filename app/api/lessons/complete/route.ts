@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { auth } from '@clerk/nextjs/server';
+import { auth, currentUser } from '@clerk/nextjs/server';
 
 export async function POST(request: NextRequest) {
   try {
@@ -9,13 +9,33 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const profile = await prisma.userProfile.findUnique({
+    let profile = await prisma.userProfile.findUnique({
       where: { clerkId },
       select: { id: true },
     });
 
     if (!profile) {
-      return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
+      const user = await currentUser();
+      const email =
+        user?.primaryEmailAddress?.emailAddress ??
+        user?.emailAddresses?.[0]?.emailAddress;
+
+      if (!user || !email) {
+        return NextResponse.json({ error: 'Profile not found' }, { status: 404 });
+      }
+
+      const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ').trim() || null;
+      const createdProfile = await prisma.userProfile.create({
+        data: {
+          clerkId,
+          email,
+          fullName,
+          isNew: false,
+        },
+        select: { id: true },
+      });
+
+      profile = createdProfile;
     }
 
     const body = await request.json();

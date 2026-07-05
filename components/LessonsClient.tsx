@@ -197,16 +197,16 @@ export default function LessonsClient({ initialLessons }: LessonsClientProps) {
                 </div>
 
                 <div className="bg-gray-50 p-6">
-                  {selectedLesson.isCompleted ? (
-                    <div className="mb-4 flex justify-end">
-                      <Link
-                        href={getPracticeHref(selectedLesson)}
-                        className="inline-flex items-center justify-center rounded-lg bg-green-600 px-6 py-3 font-semibold text-white transition-colors duration-200 hover:bg-green-700"
-                      >
-                        Làm Bài Tập Ngay
-                      </Link>
-                    </div>
-                  ) : null}
+                  <div className="mb-4 flex justify-end">
+                    <Link
+                      href={getPracticeHref(selectedLesson)}
+                      className={`inline-flex items-center justify-center rounded-lg px-6 py-3 font-semibold text-white transition-colors duration-200 ${
+                        selectedLesson.isCompleted ? 'bg-green-600 hover:bg-green-700' : 'bg-indigo-600 hover:bg-indigo-700'
+                      }`}
+                    >
+                      Làm Bài Tập Ngay
+                    </Link>
+                  </div>
 
                   <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
                     <div>
