@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-
+import process from "node:process";
 const prisma = new PrismaClient();
 
 async function main() {
@@ -14,33 +14,20 @@ async function main() {
   const lesson1 = await prisma.lesson.create({
     data: {
       title: "NHẬN BIẾT KÍ HIỆU TOÁN HỌC",
-      videoUrl: "https://www.youtube.com/embed/fHraqYZ8itA",
+      videoUrl: "https://www.youtube.com/embed//fUQ7ECd-2T4",
       order: 1,
     },
   });
 
   const lesson2 = await prisma.lesson.create({
     data: {
-      title: "NHẬN BIẾT HÌNH HỌC",
-      videoUrl: "https://www.youtube.com/embed/0gwOND9Yqis",
+      title: "NHẬN BIẾT SỐ ĐẾM",
+      videoUrl: "https://www.youtube.com/embed/ZIz1CDem8vU",
       order: 2,
     },
   });
 
-  // Tạo progress cho các bài học
-  await prisma.lessonProgress.create({
-    data: {
-      lessonId: lesson1.id,
-      isCompleted: false,
-    },
-  });
-
-  await prisma.lessonProgress.create({
-    data: {
-      lessonId: lesson2.id,
-      isCompleted: false,
-    },
-  });
+  // Progress sẽ được tạo theo từng học sinh khi các em hoàn thành bài học.
 
   console.log("✅ Seeding hoàn thành!");
   console.log("📚 Bài học 1:", lesson1);

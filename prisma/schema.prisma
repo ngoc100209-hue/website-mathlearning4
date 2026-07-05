@@ -35,6 +35,21 @@ model Lesson {
   progress    LessonProgress[]
 }
 
+model UserProfile {
+  id        String    @id @default(uuid())
+  clerkId   String    @unique
+  fullName  String?   @db.VarChar(255)
+  age       Int?
+  location  String?   @db.VarChar(255)
+  email     String    @db.VarChar(255)
+  isNew     Boolean   @default(true)
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  progress  LessonProgress[]
+
+  @@index([email])
+}
+
 model Question {
   id            String   @id @default(uuid())
   lessonId      String
@@ -51,10 +66,13 @@ model LessonProgress {
   id          String    @id @default(uuid())
   lessonId    String
   lesson      Lesson    @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  userId      String
+  user        UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
   isCompleted Boolean   @default(false)
   completedAt DateTime?
   updatedAt   DateTime  @updatedAt
 
-  @@unique([lessonId])
+  @@unique([lessonId, userId])
   @@index([lessonId])
+  @@index([userId])
 }

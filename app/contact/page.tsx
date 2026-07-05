@@ -6,12 +6,14 @@ import { Mail, Phone, MapPin, Send, Loader2, CheckCircle2, AlertCircle } from "l
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('');
   const [error, setError] = useState('');
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError('');
+    setSuccessMessage('');
     setIsSubmitting(true);
 
     try {
@@ -40,6 +42,7 @@ export default function Contact() {
         throw new Error(data.error || 'Có lỗi xảy ra');
       }
 
+      setSuccessMessage(data.message || 'Tin nhắn đã được gửi thành công!');
       setIsSuccess(true);
       if (formRef.current) {
         formRef.current.reset();
@@ -55,7 +58,7 @@ export default function Contact() {
   };
 
   return (
-    <div className="px-4 md:px-16 py-12 md:py-20 max-w-[1280px] mx-auto fade-in">
+    <div className="px-4 md:px-16 py-12 md:py-20 max-w-7xl mx-auto fade-in">
       <section className="mb-20 text-center">
         <h1 className="font-headline text-4xl md:text-5xl font-extrabold text-primary mb-6">Kết Nối Với Chúng Tôi</h1>
         <p className="text-on-surface-variant max-w-2xl mx-auto font-body text-xl">
@@ -67,32 +70,32 @@ export default function Contact() {
         {/* Contact Info Sidebar */}
         <aside className="lg:col-span-5 grid grid-cols-1 gap-6">
           <div className="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant flex gap-6 items-start ambient-glow transition-all duration-300">
-            <div className="w-12 h-12 bg-primary-container rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-primary-container rounded-full flex items-center justify-center shrink-0">
               <Mail className="text-on-primary-container" size={24} />
             </div>
             <div>
               <h3 className="font-headline text-lg font-bold text-on-surface mb-1">Email</h3>
-              <p className="font-body text-on-surface-variant">contact@mathsign.edu.vn</p>
+              <p className="font-body text-on-surface-variant">mathsignvietnam8687@gmail.com</p>
             </div>
           </div>
 
           <div className="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant flex gap-6 items-start ambient-glow transition-all duration-300">
-            <div className="w-12 h-12 bg-secondary-container rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-secondary-container rounded-full flex items-center justify-center shrink-0">
               <Phone className="text-on-secondary-container" size={24} />
             </div>
             <div>
               <h3 className="font-headline text-lg font-bold text-on-surface mb-1">Điện Thoại</h3>
-              <p className="font-body text-on-surface-variant">+84 (0) 123 456 789</p>
+              <p className="font-body text-on-surface-variant">0363578722 (Việt Nam)</p>
             </div>
           </div>
 
           <div className="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant flex gap-6 items-start ambient-glow transition-all duration-300">
-            <div className="w-12 h-12 bg-tertiary-container rounded-full flex items-center justify-center flex-shrink-0">
+            <div className="w-12 h-12 bg-tertiary-container rounded-full flex items-center justify-center shrink-0">
               <MapPin className="text-on-tertiary-container" size={24} />
             </div>
             <div>
               <h3 className="font-headline text-lg font-bold text-on-surface mb-1">Địa Chỉ</h3>
-              <p className="font-body text-on-surface-variant">Hà Nội, Việt Nam</p>
+              <p className="font-body text-on-surface-variant">Đà Nẵng, Việt Nam</p>
             </div>
           </div>
         </aside>
@@ -175,7 +178,7 @@ export default function Contact() {
           {isSuccess && (
             <div className="flex items-center gap-2 text-secondary bg-secondary/10 p-3 rounded-lg">
               <CheckCircle2 size={20} />
-              <span className="font-body">Tin nhắn đã được gửi thành công!</span>
+              <span className="font-body">{successMessage || 'Tin nhắn đã được gửi thành công!'}</span>
             </div>
           )}
         </form>

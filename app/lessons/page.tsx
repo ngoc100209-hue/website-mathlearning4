@@ -1,5 +1,8 @@
 import LessonsClient from "@/components/LessonsClient";
 import { prisma } from "@/lib/prisma";
+import { auth } from '@clerk/nextjs/server';
+
+export const dynamic = 'force-dynamic';
 
 export const metadata = {
   title: "Bài Học | Toán Học",
@@ -8,16 +11,29 @@ export const metadata = {
 
 async function getLessons() {
   try {
+    const { userId: clerkId } = await auth();
+
+    const profile = clerkId
+      ? await prisma.userProfile.findUnique({
+          where: { clerkId },
+          select: { id: true },
+        })
+      : null;
+
     const lessons = await prisma.lesson.findMany({
       orderBy: {
         order: "asc",
       },
       include: {
-        progress: true,
+        progress: profile
+          ? {
+              where: { userId: profile.id },
+            }
+          : true,
       },
     });
 
-    const lessonsWithProgress = lessons.map((lesson) => ({
+    const lessonsWithProgress = lessons.map((lesson: (typeof lessons)[number]) => ({
       ...lesson,
       isCompleted: lesson.progress[0]?.isCompleted || false,
       completedAt: lesson.progress[0]?.completedAt

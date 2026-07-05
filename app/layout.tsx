@@ -1,4 +1,6 @@
 import type { ReactNode } from 'react';
+import { ClerkProvider } from '@clerk/nextjs';
+import { viVN } from '@clerk/localizations';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import '@/app/globals.css';
@@ -21,13 +23,15 @@ export default function RootLayout({
   return (
     <html lang="vi">
       <body>
-        <div className="flex min-h-screen flex-col font-body text-on-surface selection:bg-primary-fixed">
-          <Header />
-          <main className="flex-1 w-full max-w-[1280px] mx-auto">
-            {children}
-          </main>
-          <Footer />
-        </div>
+        <ClerkProvider localization={viVN}>
+          <div className="flex min-h-screen flex-col font-body text-on-surface selection:bg-primary-fixed">
+            <Header />
+            <main className="flex-1 w-full max-w-7xl mx-auto">
+              {children}
+            </main>
+            <Footer />
+          </div>
+        </ClerkProvider>
       </body>
     </html>
   );
