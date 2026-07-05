@@ -17,6 +17,15 @@ interface LessonsClientProps {
   initialLessons: Lesson[];
 }
 
+const normalizeVideoUrl = (rawUrl: string): string => {
+  if (!rawUrl) return '';
+
+  return rawUrl
+    .trim()
+    .replace('youtube.com/embed//', 'youtube.com/embed/')
+    .replace('youtu.be/', 'www.youtube.com/embed/');
+};
+
 const getPracticeHref = (lesson: Lesson): string => {
   const title = lesson.title.toLowerCase();
 
@@ -173,7 +182,7 @@ export default function LessonsClient({ initialLessons }: LessonsClientProps) {
                     <iframe
                       width="100%"
                       height="100%"
-                      src={selectedLesson.videoUrl}
+                      src={normalizeVideoUrl(selectedLesson.videoUrl)}
                       title={selectedLesson.title}
                       frameBorder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

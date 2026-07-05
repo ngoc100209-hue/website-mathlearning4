@@ -1,9 +1,17 @@
 import type { ReactNode } from 'react';
 import { ClerkProvider } from '@clerk/nextjs';
 import { viVN } from '@clerk/localizations';
+import { Be_Vietnam_Pro } from 'next/font/google';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import '@/app/globals.css';
+
+const beVietnamPro = Be_Vietnam_Pro({
+  subsets: ['latin', 'vietnamese'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-app',
+  display: 'swap',
+});
 
 export const metadata = {
   title: 'MathSign — Học Toán bằng ngôn ngữ ký hiệu',
@@ -22,7 +30,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="vi">
-      <body>
+      <body className={beVietnamPro.variable}>
         <ClerkProvider localization={viVN}>
           <div className="flex min-h-screen flex-col font-body text-on-surface selection:bg-primary-fixed">
             <Header />

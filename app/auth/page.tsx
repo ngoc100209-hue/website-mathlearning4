@@ -5,6 +5,60 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useSignIn, useSignUp } from '@clerk/nextjs';
 import { ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 
+const extractClerkErrorMessage = (error: unknown): string => {
+  if (typeof error === 'string') {
+    return error;
+  }
+
+  if (error && typeof error === 'object') {
+    const maybeClerkError = error as {
+      message?: string;
+      errors?: Array<{ longMessage?: string; message?: string }>;
+    };
+
+    const firstNestedMessage = maybeClerkError.errors?.[0]?.longMessage || maybeClerkError.errors?.[0]?.message;
+    if (firstNestedMessage) {
+      return firstNestedMessage;
+    }
+
+    if (maybeClerkError.message) {
+      return maybeClerkError.message;
+    }
+  }
+
+  return 'Đã xảy ra lỗi.';
+};
+
+const translateClerkError = (message: string): string => {
+  const normalized = message.toLowerCase();
+
+  if (
+    normalized.includes('password is incorrect') ||
+    normalized.includes('try again, or use another method') ||
+    normalized.includes('use another method')
+  ) {
+    return 'Mật khẩu chưa đúng. Vui lòng thử lại hoặc chọn cách đăng nhập khác.';
+  }
+
+  if (normalized.includes('identifier not found') || normalized.includes('couldn\'t find your account')) {
+    return 'Không tìm thấy tài khoản với email này.';
+  }
+
+  if (normalized.includes('too many requests')) {
+    return 'Bạn thao tác quá nhanh. Vui lòng thử lại sau ít phút.';
+  }
+
+  if (normalized.includes('session has expired') || normalized.includes('expired')) {
+    return 'Phiên làm việc đã hết hạn. Vui lòng thử lại.';
+  }
+
+  if (normalized.includes('strategy') && normalized.includes('not')) {
+    return 'Phương thức đăng nhập này hiện chưa khả dụng.';
+  }
+
+  return message;
+};
+
 function AuthContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -20,6 +74,25 @@ function AuthContent() {
 
   const { signIn, setActive: setActiveSignIn } = useSignIn();
   const { signUp, setActive: setActiveSignUp } = useSignUp();
+
+  const handleGoogleSignIn = async () => {
+    if (!signIn) {
+      setError('Clerk chưa sẵn sàng. Vui lòng thử lại.');
+      return;
+    }
+
+    try {
+      setError('');
+      await signIn.authenticateWithRedirect({
+        strategy: 'oauth_google',
+        redirectUrl: '/sso-callback',
+        redirectUrlComplete: redirectPath,
+      });
+    } catch (err) {
+      const message = extractClerkErrorMessage(err);
+      setError(translateClerkError(message));
+    }
+  };
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -80,8 +153,8 @@ function AuthContent() {
         setError('Không thể đăng nhập. Vui lòng kiểm tra thông tin.');
       }
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'Đã xảy ra lỗi.';
-      setError(message);
+      const message = extractClerkErrorMessage(err);
+      setError(translateClerkError(message));
     } finally {
       setIsSubmitting(false);
     }
@@ -92,7 +165,7 @@ function AuthContent() {
       <div className="w-full max-w-3xl rounded-3xl border border-outline-variant bg-surface-container-lowest p-6 shadow-xl md:p-8">
         <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
           <div>
-            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary">Clerk Authentication</p>
+            <p className="text-sm font-semibold uppercase tracking-[0.25em] text-primary">Xác thực tài khoản</p>
             <h1 className="text-3xl font-bold text-on-surface">Đăng ký hoặc đăng nhập để tiếp tục học</h1>
             <p className="mt-2 text-sm text-on-surface-variant">Cung cấp email, tên, tuổi và khu vực để cá nhân hóa hồ sơ học tập.</p>
           </div>
@@ -187,6 +260,16 @@ function AuthContent() {
 
           {error ? <p className="rounded-xl bg-error/10 p-3 text-sm text-error md:col-span-2">{error}</p> : null}
 
+          {mode === 'signin' ? (
+            <button
+              type="button"
+              onClick={() => router.push(`/sign-in?redirect_url=${encodeURIComponent(redirectPath)}`)}
+              className="justify-self-start text-sm font-semibold text-primary underline-offset-2 hover:underline md:col-span-2"
+            >
+              Thử phương thức đăng nhập khác
+            </button>
+          ) : null}
+
           <button
             type="submit"
             disabled={isSubmitting}
@@ -196,6 +279,18 @@ function AuthContent() {
             <ArrowRight size={18} />
           </button>
         </form>
+
+        {mode === 'signin' ? (
+          <div className="mt-5 grid gap-3">
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              className="rounded-xl border border-outline-variant bg-surface px-4 py-3 text-sm font-semibold text-on-surface transition hover:bg-primary-fixed"
+            >
+              Đăng nhập bằng Google
+            </button>
+          </div>
+        ) : null}
 
         <div className="mt-6 rounded-2xl border border-primary/20 bg-primary-container/20 p-4 text-sm text-on-surface-variant">
           <div className="flex items-center gap-2 font-semibold text-primary">

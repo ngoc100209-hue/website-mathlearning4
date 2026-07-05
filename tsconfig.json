@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": ["node"],
     "target": "ES2020",
     "useDefineForClassFields": true,
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
@@ -18,7 +19,7 @@
     "paths": {
       "@/*": ["./*"]
     },
-    "baseUrl": ".",
+    "ignoreDeprecations": "6.0",
     "allowJs": true,
     "incremental": true,
     "plugins": [
@@ -32,6 +33,9 @@
     "app/**/*.tsx",
     "components/**/*.ts",
     "components/**/*.tsx",
+    "lib/**/*.ts",
+    "lib/**/*.tsx",
+    "types/**/*.d.ts",
     "next-env.d.ts",
     ".next/types/**/*.ts"
   ],

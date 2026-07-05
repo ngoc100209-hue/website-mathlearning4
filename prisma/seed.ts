@@ -1,5 +1,4 @@
-import { PrismaClient } from "@prisma/client";
-import process from "node:process";
+const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
 async function main() {
@@ -14,7 +13,7 @@ async function main() {
   const lesson1 = await prisma.lesson.create({
     data: {
       title: "NHẬN BIẾT KÍ HIỆU TOÁN HỌC",
-      videoUrl: "https://www.youtube.com/embed//fUQ7ECd-2T4",
+      videoUrl: "https://www.youtube.com/embed/fUQ7ECd-2T4",
       order: 1,
     },
   });
