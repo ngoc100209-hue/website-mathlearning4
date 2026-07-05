@@ -78,8 +78,20 @@ export default function LessonsClient({ initialLessons }: LessonsClientProps) {
       });
 
       if (!response.ok) {
-        if (response.status === 401) {
-          window.location.href = "/auth?redirect_url=/lessons";
+        if (response.status === 401 || response.status === 405) {
+          // Guest mode: still allow the learner to continue even when server progress cannot be persisted.
+          setLessons((prev) =>
+            prev.map((lesson) =>
+              lesson.id === selectedLessonId
+                ? {
+                    ...lesson,
+                    isCompleted: true,
+                    completedAt: new Date().toISOString(),
+                  }
+                : lesson
+            )
+          );
+          setActionError("Bạn chưa đăng nhập, tiến độ hiện chỉ được lưu tạm trong phiên này.");
           return;
         }
 
