@@ -11,7 +11,14 @@ export const metadata = {
 
 async function getLessons() {
   try {
-    const { userId: clerkId } = await auth();
+    let clerkId: string | null = null;
+    try {
+      const authResult = await auth();
+      clerkId = authResult.userId;
+    } catch (authError) {
+      // If Clerk auth context is unavailable, still render public lesson list.
+      console.warn("⚠️ Không thể lấy phiên đăng nhập, tiếp tục tải danh sách bài học công khai:", authError);
+    }
 
     const profile = clerkId
       ? await prisma.userProfile.findUnique({
