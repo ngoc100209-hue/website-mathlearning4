@@ -134,7 +134,16 @@ function AuthContent() {
         }
 
         if (result.status === 'missing_requirements') {
-          setError('Clerk vẫn đang bật xác minh khi đăng ký. Hãy tắt mục Verify at sign-up trong Clerk rồi thử lại.');
+          const needsEmailVerification =
+            Array.isArray(result.unverifiedFields) && result.unverifiedFields.includes('email_address');
+
+          if (needsEmailVerification) {
+            setError('Tài khoản này vẫn yêu cầu xác minh email (email_address). Thường do app đang dùng Clerk instance khác với nơi bạn vừa tắt.');
+          } else {
+            const unverified = Array.isArray(result.unverifiedFields) ? result.unverifiedFields.join(', ') : 'không rõ';
+            const missing = Array.isArray(result.missingFields) ? result.missingFields.join(', ') : 'không rõ';
+            setError(`Đăng ký chưa hoàn tất. Thiếu: ${missing}. Chưa xác minh: ${unverified}.`);
+          }
         } else {
           setError('Không thể tạo tài khoản. Vui lòng thử lại.');
         }
