@@ -166,7 +166,7 @@ const questionsData: Question[] = [
       { id: 'FALSE', value: 'Sai', image: 'https://i.postimg.cc/W3R42j4v/dau-x.png', imageFocus: { mode: 'both', side: 'center', y: '35%', zoom: 1.2 } },
     ],
     correctAnswer: 'TRUE',
-    explanation: 'Đây là số 70 nên đáp án đúng là Đúng.',
+    explanation: 'Đây là số 70 nên đáp án là Đúng.',
   },
 ];
 

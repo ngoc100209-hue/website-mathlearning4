@@ -162,7 +162,7 @@ const questionsData: Question[] = [
   {
     id: 1,
     type: 'image-options',
-    question: 'Chọn hình ảnh tương ứng với dấu cộng',
+    question: 'Chọn hình ảnh tương ứng với dấu trừ',
     options: [
       { label: 'A', imageUrl: 'https://i.postimg.cc/XJS6Qtgz/Thiet-ke-chua-co-ten-(1).png', alt: 'Hình cộng', imageFocus: { mode: 'one', side: 'center', y: '28%' } },
       { label: 'B', imageUrl: 'https://i.postimg.cc/7Zzk0x3f/z7927490753303-3f753afe01dc24bd5c0637cc7a8186a9.jpg', alt: 'Hình trừ', imageFocus: { mode: 'one', side: 'center', y: '28%' } },
@@ -170,7 +170,7 @@ const questionsData: Question[] = [
       { label: 'D', imageUrl: 'https://i.postimg.cc/FHS439yR/z7927490746629-bcc9956e0e5b078a13d1556a1d882140.jpg', alt: 'Hình chia', imageFocus: { mode: 'one', side: 'center', y: '28%' } },
     ],
     correctAnswer: 'A',
-    explanation: 'Dấu cộng được biểu diễn bằng ký hiệu +.',
+    explanation: 'Dấu trừ được biểu diễn bằng ký hiệu -.',
   },
   {
     id: 2,
@@ -184,36 +184,11 @@ const questionsData: Question[] = [
       { label: 'D', text: '+ dấu cộng' },
     ],
     correctAnswer: 'C',
-    explanation: 'Phép trừ được biểu thị bằng ký hiệu -.',
+    explanation: 'Dấu trừ được biểu thị bằng ký hiệu -.',
   },
-  {
 
-  id: 4,
-  type: 'match-video',
-  question: 'Ghép mỗi ký hiệu với video biểu thị ký hiệu đó',
-  videos: [
-    { id: 'v1', videoUrl: 'https://youtube.com/embed/4IJ6xhTQXYY' },
-    { id: 'v2', videoUrl: 'https://youtube.com/embed/8HMd6pDO05M' },
-    { id: 'v3', videoUrl: 'https://youtube.com/embed/xgRub31kMkQ' },
-    { id: 'v4', videoUrl: 'https://youtube.com/embed/QqoHifdjZ2g' },
-  ],
-  words: [
-    { id: 'dấu lớn', label: '>' },
-    { id: 'dấu bé', label: '<' },
-    { id: 'dấu bằng', label: '=' },
-    { id: 'dấu cộng', label: '+' },
-  ],
-  correctPairs: [
-    { wordId: 'dấu lớn', videoId: 'v2' },
-    { wordId: 'dấu bé', videoId: 'v3' },
-    { wordId: 'dấu bằng', videoId: 'v1' },
-    { wordId: 'dấu cộng', videoId: 'v4' },
-  ],
-  explanation: 'Mỗi ký hiệu được ghép với video minh họa tương ứng.',
-}
-,
   {
-    id: 5,
+    id: 3,
     type: 'image-options',
     question: '1+1 bằng bao nhiêu?',
     options: [
